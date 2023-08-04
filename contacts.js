@@ -1,24 +1,39 @@
 const fs = require("fs/promises");
-// contacts.js
+const path = require("path");
+const { nanoid } = require("nanoid");
 
-/*
- * Розкоментуй і запиши значення
- * const contactsPath = ;
- */
+const contactsPath = path.join(__dirname, "db", "contacts.json");
 
-// TODO: задокументувати кожну функцію
-function listContacts() {
-  // ...твій код. Повертає масив контактів.
-}
+const listContacts = async () => {
+  const data = await fs.readFile(contactsPath);
+  const contacts = JSON.parse(data);
+  return contacts;
+};
 
-function getContactById(contactId) {
-  // ...твій код. Повертає об'єкт контакту з таким id. Повертає null, якщо контакт з таким id не знайдений.
-}
+const getContactById = async (contactId) => {
+  const contacts = await listContacts();
+  const contactById = contacts.find((item) => item.id === contactId);
+  if (!contactById) {
+    return null;
+  }
+  return contactById;
+};
 
-function removeContact(contactId) {
+const removeContact = (contactId) => {
   // ...твій код. Повертає об'єкт видаленого контакту. Повертає null, якщо контакт з таким id не знайдений.
-}
+};
 
-function addContact(name, email, phone) {
-  // ...твій код. Повертає об'єкт доданого контакту.
-}
+const addContact = async (name, email, phone) => {
+  const contacts = await listContacts();
+  const newContact = { id: nanoid(), name, email, phone };
+  contacts.push(newContact);
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  return newContact;
+};
+
+module.exports = {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+};
