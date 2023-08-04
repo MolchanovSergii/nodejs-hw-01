@@ -19,8 +19,15 @@ const getContactById = async (contactId) => {
   return contactById;
 };
 
-const removeContact = (contactId) => {
-  // ...твій код. Повертає об'єкт видаленого контакту. Повертає null, якщо контакт з таким id не знайдений.
+const removeContact = async (contactId) => {
+  const contacts = await listContacts();
+  const idx = contacts.findIndex((item) => item.id === contactId);
+  if (idx === -1) {
+    return null;
+  }
+  const [deleteContact] = contacts.splice(idx, 1);
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  return deleteContact;
 };
 
 const addContact = async (name, email, phone) => {
