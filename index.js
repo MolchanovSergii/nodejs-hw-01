@@ -7,14 +7,11 @@ const invokeAction = async ({ action, id, name, email, phone }) => {
   switch (action) {
     case "list":
       const allContacts = await contacts.listContacts();
-      console.log(allContacts);
+      console.table(allContacts);
       break;
 
     case "get":
       const getContactById = await contacts.getContactById(id);
-      if (!getContactById) {
-        throw new Error(`Contact with id: ${id} not found`);
-      }
       console.log(getContactById);
       break;
 
